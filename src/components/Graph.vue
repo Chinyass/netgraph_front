@@ -28,8 +28,6 @@ const nodes = {
 
 <style scoped>
 .graph {
-  width: 800px;
-  height: 600px;
-  border: 1px solid #000;
+  height: 70vh;
 }
 </style>
