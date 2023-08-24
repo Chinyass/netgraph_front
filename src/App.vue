@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import Graph from './components/Graph.vue';
+import { useCounterStore } from './stores/counter'
+import { useNodeStore } from './stores/nodes'
+
+const store = useCounterStore()
+const nodeStore = useNodeStore()
 
   const links = [
     'Dashboard',
@@ -7,9 +13,16 @@ import Graph from './components/Graph.vue';
     'Profile',
     'Updates',
   ]
+setTimeout(() => {
+  store.increment()
+}, 1000)
+
+const doubleValue = computed(() => store.doubleCount)
+
 </script>
 
 <template>
+  
   <v-app id="inspire">
     <v-app-bar flat>
       <v-container class="mx-auto d-flex align-center justify-center">
@@ -64,16 +77,28 @@ import Graph from './components/Graph.vue';
                 ></v-list-item>
               </v-list>
             </v-sheet>
+            
+            {{store.count}}
+            {{ doubleValue }}
+            <button @click="store.increment">inc</button>
+            {{ nodeStore.nodes }}
+            {{ nodeStore.edges }}
+            <button @click="nodeStore.fetchNodes">getNodes</button>
           </v-col>
-
+          
+          
           <v-col>
-            <v-sheet
-              max-height="70vh"
-              rounded="lg"
-            >
-                <Graph />
-              <!--  -->
-            </v-sheet>
+           
+              <v-sheet
+                max-height="70vh"
+                rounded="lg"
+                :elevation="8"
+              >
+                  <Graph v-if="Object.keys(nodeStore.nodes).length" :nodes="nodeStore.nodes" :edges="nodeStore.edges" />
+                  <v-skeleton-loader v-else type="card" theme="text" loading-text="LOADING" color="gray" height="70vh"></v-skeleton-loader>
+                  
+                <!--  -->
+              </v-sheet>
           </v-col>
         </v-row>
       </v-container>
