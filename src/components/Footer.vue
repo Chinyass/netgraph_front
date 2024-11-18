@@ -3,7 +3,12 @@
 </script>
 <template>
     <footer class="footer">
-      <p>Copyright © {{ new Date().getFullYear() }} Mongush Ch.D</p>
+      <p>{{ new Date().getFullYear() }} CET </p>
+      <div class="emails">
+              <a href="mailto:chinya@tvsi.ru">chinya@tvsi.ru</a>
+              <br />
+              <a href="mailto:bodaral17r85@gmail">bodaral17r85@gmail</a>
+      </div>
     </footer>
 </template>
   

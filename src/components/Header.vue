@@ -15,11 +15,7 @@ const accountName =  ref('Учетная запись')
               <span class="text-gray-400">v0.0.2</span>
           </div>
           <div class="right-side">
-              <div class="emails">
-              <a href="mailto:chinya@tvsi.ru">chinya@tvsi.ru</a>
-              <br />
-              <a href="mailto:bodaral17r85@gmail">bodaral17r85@gmail</a>
-              </div>
+              
               <div class="account-menu">
               <button @click="showMenu = !showMenu">
                   {{ accountName }}
