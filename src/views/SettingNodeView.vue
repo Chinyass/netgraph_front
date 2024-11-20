@@ -107,6 +107,7 @@ async function changePage(newPage: number) {
 <style scoped>
 
 .pagination {
+  margin-top: 0.8rem;
   display: flex;
   justify-content: center; /* Центрируем пагинацию */
   align-items: center;
