@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue';
 import Pagination from '../components/Pagination.vue';
 
 const props = defineProps({
-  data: {
+  items: {
     type: Array,
     required: true
   },
@@ -11,37 +11,7 @@ const props = defineProps({
     type: Number,
     default: 10
   }
-  }
-});
-
-const currentPage = ref(1);
-const filteredData = computed(() => {
-  return props.data.filter(item =>
-    item.name.toLowerCase().includes(props.filter.toLowerCase()) ||
-    item.description.toLowerCase().includes(props.filter.toLowerCase())
-  );
-});
-
-const totalItems = computed(() => filteredData.value.length);
-
-const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * props.itemsPerPage;
-  const end = start + props.itemsPerPage;
-  return filteredData.value.slice(start, end);
-});
-
-const paginate = (newPage) => {
-  currentPage.value = newPage;
-};
-
-
-// Важно для отслеживания изменений props.filter:
-watch(
-  () => props.filter,
-  () => {
-    currentPage.value = 1; // Сбрасываем страницу при изменении фильтра
-  }
-)
+  });
 
 </script>
 

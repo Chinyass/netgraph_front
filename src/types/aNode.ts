@@ -9,6 +9,8 @@ interface aNode {
     snmp: boolean
     error: string | null
     location: string | null
+    address: string | null
+    role: string | null
 }
 
 export default aNode

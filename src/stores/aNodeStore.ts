@@ -12,22 +12,20 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
     const anodes = ref<aNode[]>([]);
     const group_nodes = ref<NodeGroup[]>([])
     const totalCount = ref(0)
+    
+    const stantions = ref([])
 
     const backendUrl = "http://10.254.103.51:3000"
 
-    async function fetchaNodes(limit: number, offset: number, searchField?: string, searchQuery?: string) {
+    async function fetchaNodes(limit: number, offset: number) {
 
         try {
             const params: any = {
                 limit: limit,
                 offset: offset
             }
-            if (searchField && searchQuery){
-                params["searchField"] = searchField
-                params["search"] = searchQuery
-            }
             
-            const response = await axios.get(`${backendUrl}/api/nodes`,{
+            const response = await axios.post(`${backendUrl}/api/nodes`,null,{
                 params: params,
             });
             
@@ -58,5 +56,15 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
         }
     }
 
-    return { anodes,group_nodes, totalCount, fetchaNodes, fetchNodesGroup }
+    async function fetchStantions() {
+        try {
+            const response = await axios.get(`${backendUrl}/api/stantions`);
+            console.log(response.data)
+            stantions.value = response.data
+        } catch (error) {
+            console.error("Error fetching nodes:", error);
+        }
+    }
+
+    return { anodes,group_nodes,stantions, totalCount, fetchaNodes, fetchNodesGroup, fetchStantions }
 })
