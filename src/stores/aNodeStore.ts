@@ -5,6 +5,8 @@ import axios from 'axios';
 import aNode from '../types/aNode'
 
 export const useaNodeStore = defineStore('aNodeStore', () => {
+    const backendUrl = import.meta.env.VITE_API_URL
+
     type NodeGroup = {
         _count: number,
         location: string
@@ -15,7 +17,6 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
     
     const stantions = ref([])
 
-    const backendUrl = "http://10.254.103.51:3000"
 
     async function fetchaNodes(limit: number, offset: number) {
 
@@ -28,7 +29,7 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
             const response = await axios.post(`${backendUrl}/api/nodes`,null,{
                 params: params,
             });
-            
+            console.log(response)
             anodes.value = response.data.nodes
 
             totalCount.value = response.data.total_count
