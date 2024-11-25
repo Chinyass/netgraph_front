@@ -8,9 +8,17 @@ interface aNode {
     ping: boolean
     snmp: boolean
     error: string | null
-    location: string | null
+    location: {
+        id: number,
+        name: string
+    }
+    zone: {
+        id: number,
+        code: number,
+        name: string
+    }
     address: string | null
-    role: string | null
+    role: number[] | null
 }
 
 export default aNode

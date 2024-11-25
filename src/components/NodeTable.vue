@@ -1,33 +1,45 @@
 <script setup>
-import {ref, onMounted, computed, watch} from 'vue'
-import { useaNodeStore } from '../stores/aNodeStore';
+import { ref, computed } from 'vue';
 import { useGlobalConfig } from "vuestic-ui";
 
 const { mergeGlobalConfig } = useGlobalConfig();
 
-const nodeStore = useaNodeStore();
-const limit = ref(10);
-const offset = ref(0);
-const currentPage = ref(1)
-const visible_pages = 7
+// Определяем пропсы
+const props = defineProps({
+  items: {
+    type: Array,
+    default: () => [],
+  },
+  totalCount: {
+    type: Number,
+    default: 0,
+  },
+  limit: {
+    type: Number,
+    default: 10,
+  },
+  visiblePages: {
+    type: Number,
+    default: 7,
+  },
+});
 
-const pages = computed(() => Math.ceil(nodeStore.totalCount / limit.value) )
+// Определяем события, которые компонент может эмитить
+const emits = defineEmits(['changePage']);
 
-const items = computed(() => nodeStore.anodes.map( el => {
-    const { id, ...new_item } = el
-  return new_item
-}))
+// Текущая страница
+const currentPage = ref(1);
 
-watch(currentPage, async (newCurrentPage) => {
-    currentPage.value = newCurrentPage;
-    offset.value = (newCurrentPage - 1) * limit.value;
-    await nodeStore.fetchaNodes(limit.value, offset.value)
-})
+// Функция, вызываемая при изменении страницы
+function onPageChange(newPage) {
+  currentPage.value = newPage;
+  emits('changePage', newPage);
+}
 
-onMounted( async () => {
-    await nodeStore.fetchaNodes(limit.value,offset.value)
-})
+// Вычисляем общее количество страниц
+const pages = computed(() => Math.ceil(props.totalCount / props.limit));
 
+// Настраиваем глобальные настройки VaPagination
 mergeGlobalConfig({
   components: {
     presets: {
@@ -44,25 +56,45 @@ mergeGlobalConfig({
 </script>
 
 <template>
-    <VaDataTable :items="items"></VaDataTable>
-    <VaPagination
-        v-model="currentPage"
-
-        preset="darkPagination"
-        :pages="pages"
-        :visible-pages="visible_pages"
-        :total="nodeStore.totalCount"
-        boundary-numbers
-        buttons-preset="secondary"
-        class="justify-center sm:justify-start"
-    />
+  <VaDataTable :items="props.items" class="compact-table"></VaDataTable>
+  <VaPagination
+    v-model="currentPage"
+    preset="darkPagination"
+    :pages="pages"
+    :visible-pages="props.visiblePages"
+    :total="props.totalCount"
+    boundary-numbers
+    buttons-preset="secondary"
+    class="justify-center sm:justify-start"
+    @update:model-value="onPageChange"
+  />
 </template>
 
 <style scoped>
-
 .pagination-container {
   display: flex;
   justify-content: center;
   margin: 1rem 0;
+}
+.compact-table {
+  font-size: 12px; /* Уменьшаем размер шрифта */
+}
+
+.compact-table .va-data-table__th,
+.compact-table .va-data-table__td {
+  padding: 4px 8px; /* Уменьшаем отступы в ячейках */
+}
+
+.compact-table .va-data-table__th {
+  font-weight: bold;
+}
+
+.compact-table .va-data-table__td {
+  /* Дополнительные стили для ячеек */
+}
+
+/* Если нужно уменьшить высоту строки */
+.compact-table .va-data-table__tr {
+  height: 32px; /* Устанавливаем требуемую высоту строки */
 }
 </style>

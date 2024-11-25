@@ -18,7 +18,7 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
     const stantions = ref([])
 
 
-    async function fetchaNodes(limit: number, offset: number) {
+    async function fetchaNodes(limit: number, offset: number,zone_id?: number, location_id?: number | null, name?: string | null, ip?: string | null, address?: string | null) {
 
         try {
             const params: any = {
@@ -26,10 +26,30 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
                 offset: offset
             }
             
-            const response = await axios.post(`${backendUrl}/api/nodes`,null,{
+            if (zone_id){
+                params["zone_id"] = zone_id
+            }
+            
+            if (location_id) {
+                params["location_id"] = location_id
+            }
+
+            if (name) {
+                params["name"] = name
+            }
+
+            if (ip) {
+                params["ip"] = ip
+            }
+
+            if (address) {
+                params["address"] = address
+            }
+
+            const response = await axios.get(`${backendUrl}/api/nodes`,{
                 params: params,
             });
-            console.log(response)
+
             anodes.value = response.data.nodes
 
             totalCount.value = response.data.total_count
@@ -39,33 +59,5 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
         }
     }
 
-    async function fetchNodesGroup(limit: number, offset: number, groupBy: string) {
-        try {
-            const params: any = {
-                limit: limit,
-                offset: offset,
-                groupBy: 'location'
-            }
-            
-            const response = await axios.get(`${backendUrl}/api/nodes/group`,{
-                params: params,
-            });
-            console.log(response.data)
-            group_nodes.value = response.data
-        } catch (error) {
-            console.error("Error fetching nodes:", error);
-        }
-    }
-
-    async function fetchStantions() {
-        try {
-            const response = await axios.get(`${backendUrl}/api/stantions`);
-            console.log(response.data)
-            stantions.value = response.data
-        } catch (error) {
-            console.error("Error fetching nodes:", error);
-        }
-    }
-
-    return { anodes,group_nodes,stantions, totalCount, fetchaNodes, fetchNodesGroup, fetchStantions }
+    return { anodes,group_nodes,stantions, totalCount, fetchaNodes }
 })
