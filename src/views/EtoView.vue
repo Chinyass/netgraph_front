@@ -10,7 +10,6 @@ const EtoStore = useaEtoStore()
 const nodeStore = useaNodeStore()
 
 
-
 const items = computed(() => EtoStore.zones.map( el => {
     return {
       name: el.name,
@@ -19,7 +18,7 @@ const items = computed(() => EtoStore.zones.map( el => {
       "Узлы доступа": el.locationCounts['Узел доступа']
     }
 
-}) )
+}))
 
 const columns = [
       { key: "name", sortable: true },
@@ -100,6 +99,16 @@ function showselectable() {
 const zone_id = ref<number>()
 const location_id = ref<null | number>(null)
 
+const group_locality = ref(false)
+
+watch(group_locality, async (isChecked) => {
+    if (isChecked) {
+      await EtoStore.fetchLocality()
+    } else {
+      await EtoStore.fetchZones()
+    }
+})
+
 watch(selectedItems, async (newSelectedItems) => {
   showselectable()
   const zone_name = newSelectedItems[0]["name"]
@@ -142,8 +151,13 @@ async function filterNode() {
   visiblePagesNode.value = 7
   limitNode.value = 10
   const offset = 0
-  location_id.value = search_location.value.id
 
+  if (search_location.value){
+    location_id.value = search_location.value.id
+  }
+  else {
+    location_id.value = null
+  }
 
   await nodeStore.fetchaNodes(
     limitNode.value, 
@@ -182,6 +196,11 @@ async function filterNode() {
         Выбрать объект
     </VaButton>
   </div>
+  <VaCheckbox
+      v-model="group_locality"
+      label="По населенным пунктам"
+      left-label
+    />
 
   <div style="display: flex; justify-content: center;" >
     <div style="width: 50%" >
@@ -205,44 +224,45 @@ async function filterNode() {
 
   <div  v-if="nodeStore.anodes.length != 0" style="height:50em; margin-top:2%">
     <h1>Оборудования на объекте {{selectedItems[0]["name"]}}</h1>
-    
-    <VaForm
-      class="w-[300px]"
-      tag="form"
-      @submit.prevent="filterNode"
-    >
-      <VaInput
-        v-model="search_name"
-        label="Name"
-      />
-
-      <VaInput
-        v-model="search_ip"
-        class="mt-3"
-        label="IP"
-      />
-
-      <VaInput
-        v-model="search_address"
-        class="mt-3"
-        label="Address"
-      />
-
-      <VaSelect
-        v-model="search_location"
-        class="mt-3"
-        label="Расположение"
-        :options="searcy_location_options"
-        clearable
-      />
-
-      <VaButton
-        type="submit"
-        class="mt-3"
+    <div style="margin-top: 2%;">
+      <VaForm
+        class="w-[300px]"
+        tag="form"
+        @submit.prevent="filterNode"
       >
-        Поиск
-      </VaButton>
-    </VaForm>
+        <VaInput
+          v-model="search_name"
+          label="Name"
+        />
+
+        <VaInput
+          v-model="search_ip"
+          class="mt-3"
+          label="IP"
+        />
+
+        <VaInput
+          v-model="search_address"
+          class="mt-3"
+          label="Address"
+        />
+
+        <VaSelect
+          v-model="search_location"
+          class="mt-3"
+          label="Расположение"
+          :options="searcy_location_options"
+          clearable
+        />
+
+        <VaButton
+          type="submit"
+          class="mt-3"
+        >
+          Поиск
+        </VaButton>
+      </VaForm>
+    </div>
 
     <div style="width: 80%; margin-left: 3%; display: flex; justify-content: center;" >
       <div>

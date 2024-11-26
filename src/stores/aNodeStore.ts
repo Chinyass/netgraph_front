@@ -46,10 +46,12 @@ export const useaNodeStore = defineStore('aNodeStore', () => {
                 params["address"] = address
             }
 
+            console.log(params)
+
             const response = await axios.get(`${backendUrl}/api/nodes`,{
                 params: params,
             });
-
+            console.log(response.data)
             anodes.value = response.data.nodes
 
             totalCount.value = response.data.total_count

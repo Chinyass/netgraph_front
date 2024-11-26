@@ -17,6 +17,16 @@ export const useaEtoStore = defineStore('EtoStore', () => {
             console.error("Error fetching zones:", error);
         }
     }
+
+    async function fetchLocality() {
+        try{
+            const response = await axios.get(`${backendUrl}/api/locality`)
+            zones.value = response.data
+        } catch (error) {
+            console.error("Error fetching zones:", error);
+        }
+    }
+
     async function getZoneByName(name: string) {
         try{
             const response = await axios.get(`${backendUrl}/api/zones/name/${name}`)
@@ -26,5 +36,5 @@ export const useaEtoStore = defineStore('EtoStore', () => {
         }
     }
 
-    return {zones, fetchZones, getZoneByName}
+    return {zones, fetchZones, fetchLocality, getZoneByName}
 })
